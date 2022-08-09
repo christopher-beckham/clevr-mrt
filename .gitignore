@@ -1,0 +1,14 @@
+exps/
+architectures/*.py
+*.png
+*.bak
+*.pdf
+*.png
+*.*~
+*.*.1
+*.*.2
+*.pyc
+render/
+docker/
+cleanup/
+update_this/
