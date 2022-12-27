@@ -303,9 +303,9 @@ def setup(exp_dict, savedir, batch_size=None, num_workers=0, auto_resume=True, o
         # only used for holo_contrastive_encoder. If we're not in 
         # contrastive mode, change it to nn.Identity() so that chkpt
         # loading later on does not throw an error.
-        if exp_dict['class'] != "holo_encoder_contrastive":
-            logger.debug("probe.cam_encode_3d = nn.Identity()")
-            probe.cam_encode_3d = nn.Identity()        
+        #if exp_dict['class'] != "holo_encoder_contrastive":
+        #    logger.debug("probe.cam_encode_3d = nn.Identity()")
+        #    probe.cam_encode_3d = nn.Identity()        
     else:
         if exp_dict['class'] == 'resnet_encoder':
             raise Exception("probe must be specified for `resnet_encoder` class!")

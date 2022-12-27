@@ -318,8 +318,17 @@ class HoloEncoder(Base):
         self.enc.load_state_dict(dd['enc'],
                                  strict=self.load_strict)
         if self.probe is not None:
-            self.probe.load_state_dict(dd['probe'],
-                                       strict=self.load_strict)
+            # HACKY: due to some stupid decisions I made, probe class has a
+            # layer called "cam_encode_3d" which is only used for contrastive
+            # stuff. So if the checkpoint does not contain keys that start with
+            # "cam_encode_3d", then set self.probe.cam_encode_3d to None and
+            # then load in the checkpoint.
+            any_keys_cam3d = list(filter(lambda st: st.startswith("cam_encode_3d"), 
+                                        dd['probe'].keys()))
+            if len(any_keys_cam3d) == 0:
+                logger.debug("set self.probe.cam_encode_3d=None (see comment in file)...")
+                self.probe.cam_encode_3d = None
+            self.probe.load_state_dict(dd['probe'], strict=self.load_strict)
         # Load the models' optim state.
         try:
             for key in self.optim:

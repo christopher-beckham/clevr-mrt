@@ -9,7 +9,6 @@ from torch import nn
 from torch.distributions import (Normal,
                                  Uniform,
                                  kl_divergence)
-from .util.ssim import SSIM
 
 class HoloAE(Base):
 

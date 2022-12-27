@@ -72,6 +72,7 @@ def eval_experiment(experiment,
                     batch_size, 
                     num_workers=1, 
                     is_legacy=False, 
+                    dry_run=False,
                     verbose=False):
     """Evaluate experiment.
 
@@ -86,6 +87,9 @@ def eval_experiment(experiment,
         is_legacy (bool, optional): Is this a legacy experiment?
             Set this to true if the experiment has a cfg.yaml instead of a 
             cfg.json file. Defaults to False.
+        dry_run (bool, optional): If this is set, just exit after
+            loading in the experiment. (This is useful to check to
+            see if checkpoint loading works.)
     """ 
     assert mode in ['train', 'valid', 'test']
     
@@ -140,6 +144,10 @@ def eval_experiment(experiment,
     logger.info("Loading checkpoint: {}".format(experiment))
     net.load(experiment)
 
+    if dry_run:
+        logger.debug("Dry run set, terminating...")
+        return
+
     evaluate_and_save(
         net, 
         loader, 
@@ -156,6 +164,7 @@ if __name__ == "__main__":
     parser.add_argument('--mode', choices=['train', 'valid'], default='valid')
     parser.add_argument('--is_legacy', action='store_true')
     parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--dry_run", action='store_true')
     
     args, others = parser.parse_known_args()
     
@@ -163,4 +172,5 @@ if __name__ == "__main__":
                     mode=args.mode,
                     batch_size=args.batch_size,
                     is_legacy=args.is_legacy,
+                    dry_run=args.dry_run,
                     verbose=True)

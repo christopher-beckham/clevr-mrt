@@ -212,6 +212,16 @@ class ResnetEncoder(Base):
         dd = torch.load(filename,
                         map_location=map_location)
         # Load the models.
+        
+        # HACKY: due to some stupid decisions I made, probe class has a
+        # layer called "cam_encode_3d" which is only used for contrastive
+        # stuff. So if the checkpoint does not contain keys that start with
+        # "cam_encode_3d", then set self.probe.cam_encode_3d to None and
+        # then load in the checkpoint.
+        any_keys_cam3d = list(filter(lambda st: st.startswith("cam_encode_3d"), dd['probe'].keys()))
+        if len(any_keys_cam3d) == 0:
+            logger.debug("set self.probe.cam_encode_3d=None (see comment in file)...")
+            self.probe.cam_encode_3d = None
         self.probe.load_state_dict(dd['probe'], strict=self.load_strict)
         # Load the models' optim state.
         try:
@@ -219,9 +229,8 @@ class ResnetEncoder(Base):
                 if ('optim_%s' % key) in dd:
                     self.optim[key].load_state_dict(dd['optim_%s' % key])
         except:
-            print("WARNING: was unable to load state dict for optim")
-            print("This is not a big deal if you're only using " + \
-                  "the model for inference, however.")
+            logger.warning("Unable to load optim state dict for some reason, but if you " + \
+                "are loading in checkpoints just for inference, you can safely ignore this.")
         self.last_epoch = dd['epoch']
         if 'metric_lowest' in dd:
             self.set_metric_highest(dd['metric_highest'])
