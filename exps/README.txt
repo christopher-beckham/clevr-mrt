@@ -1,0 +1,4 @@
+- `eval-launcher-vX.sh`: launch experiments for clevr-mrt-vX experiments
+- `test-eval-launcher-vX.sh`: test (locally) clevr-mrt-vX experiments
+- `env_vX.sh`: environment variables for clevr-mrt-vX (dataset locations)
+- `eval-pretrained-*.sh`: local testing of pre-trained models
