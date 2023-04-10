@@ -20,7 +20,7 @@ fi
 
 cd ..
 
-for filename in `ls exps/verify/v1/*.sh`; do
+for filename in `ls exps/verify/v2/*.sh`; do
 
     echo "Sourcing $filename ..."
     source $filename
